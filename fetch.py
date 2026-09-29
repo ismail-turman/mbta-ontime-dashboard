@@ -15,15 +15,16 @@ def get_routes():
     r = requests.get(url,headers=headers,params=params)
     data = r.json()
     info = []
+    pulled_at = datetime.now(timezone.utc).isoformat()
     r.raise_for_status()
     for i in data['data']:
         route_id = i['id']
         long_name = i['attributes']['long_name']
         direction_name = i['attributes']['direction_names']
-        j = {"route_id" : route_id, "long_name" : long_name, "direction_names" : direction_name}
+        j = {"route_id" : route_id, "long_name" : long_name, "direction_names" : direction_name, "pulled_at" : pulled_at}
         info.append(j)
     return info
-# if i wanna get scheduled times instead of predicitions use /schedules
+
 def get_predictions(route_id):
     url ='https://api-v3.mbta.com/predictions'
     headers = {"x-api-key" : api_key}
@@ -32,6 +33,7 @@ def get_predictions(route_id):
     r.raise_for_status()
     data = r.json()
     info = []
+    pulled_at = datetime.now(timezone.utc).isoformat()
     for i in data['data']:
         prediction_id = i['id']
         stop_id = i['relationships']['stop']['data']['id']
@@ -40,6 +42,6 @@ def get_predictions(route_id):
         arrival_time = i['attributes']['arrival_time']
         departure_time = i['attributes']['departure_time']
         status = i['attributes']['status']
-        j = {'prediction_id' : prediction_id, 'route_id' : route_id, 'stop_id': stop_id, 'trip_id' : trip_id, 'direction_id' : direction_id, 'arrival_time' : arrival_time, 'departure_time' : departure_time, 'status' : status}
+        j = {'prediction_id' : prediction_id, 'route_id' : route_id, 'stop_id': stop_id, 'trip_id' : trip_id, 'direction_id' : direction_id, 'arrival_time' : arrival_time, 'departure_time' : departure_time, 'status' : status, 'pulled_at' : pulled_at}
         info.append(j)
     return info
