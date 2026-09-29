@@ -13,7 +13,7 @@ pred_df['arrival_time'] = pd.to_datetime(pred_df['arrival_time'])
 pred_df['departure_time'] = pd.to_datetime(pred_df['departure_time'])
 pred_df['pulled_at'] = pd.to_datetime(pred_df['pulled_at'])
 
-# duckdb vv
+# duckdb 
 con = duckdb.connect('mbta.duckdb')
 
 def table_exists(con, table_name, schema="main"):
@@ -24,7 +24,7 @@ def table_exists(con, table_name, schema="main"):
 if table_exists(con, 'predictions'):
     con.execute('INSERT INTO predictions SELECT * FROM pred_df')
 else: con.execute('CREATE TABLE predictions AS SELECT * FROM pred_df')
-#print(con.sql("SELECT COUNT(*) FROM predictions"))
+
 
 
 # calculating minutes until arrival
@@ -47,4 +47,6 @@ res['lateness'] = res['arrival_time_predicted'] - res['arrival_time_scheduled']
 res['lateness_minutes'] = res['lateness'].dt.total_seconds() / 60
 res['on_time'] = res['lateness_minutes'] <= 15
 
+
+print(f"Predictions in DuckDB: {con.sql("SELECT COUNT(*) FROM predictions").fetchone()[0]}")
 print(f"On time: {res['on_time'].mean():.1%} (n = {len(res)})")
