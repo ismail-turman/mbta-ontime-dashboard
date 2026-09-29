@@ -25,6 +25,27 @@ def get_routes():
         info.append(j)
     return info
 
+def get_schedules(route_id):
+    url = 'https://api-v3.mbta.com/schedules'
+    headers = {'x-api-key' : api_key}
+    params = {'filter[route]' : route_id}
+    r = requests.get(url,headers=headers,params=params)
+    r.raise_for_status()
+    data = r.json()
+    info = []
+    for i in data['data']:
+        arrival_time = i['attributes']['arrival_time']
+        departure_time = i['attributes']['departure_time']
+        direction_id = i['attributes']['direction_id']
+        stop_id = i['relationships']['stop']['data']['id']
+        trip_id = i['relationships']['trip']['data']['id']
+        schedule_id = i['id']
+        stop_sequence = i['attributes']['stop_sequence']
+        j = {'route_id' : route_id, 'arrival_time' : arrival_time, 'departure_time' : departure_time, 'direction_id' : direction_id, 'stop_id' : stop_id, 'trip_id' : trip_id, 'schedule_id' : schedule_id, 'stop_sequence' : stop_sequence}
+        info.append(j)
+    return info
+    
+
 def get_predictions(route_id):
     url ='https://api-v3.mbta.com/predictions'
     headers = {"x-api-key" : api_key}
@@ -45,3 +66,6 @@ def get_predictions(route_id):
         j = {'prediction_id' : prediction_id, 'route_id' : route_id, 'stop_id': stop_id, 'trip_id' : trip_id, 'direction_id' : direction_id, 'arrival_time' : arrival_time, 'departure_time' : departure_time, 'status' : status, 'pulled_at' : pulled_at}
         info.append(j)
     return info
+
+
+
