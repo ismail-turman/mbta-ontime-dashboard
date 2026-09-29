@@ -24,5 +24,9 @@ def table_exists(con, table_name, schema="main"):
 if table_exists(con, 'predictions'):
     con.execute('INSERT INTO predictions SELECT * FROM df')
 else: con.execute('CREATE TABLE predictions AS SELECT * FROM df')
-
 print(con.sql("SELECT COUNT(*) FROM predictions"))
+
+
+# calculating minutes until arrival
+df['time_until_arrival'] = df['arrival_time'] - df['pulled_at']
+df['minutes_until_arrival'] = df['time_until_arrival'].dt.total_seconds() / 60
