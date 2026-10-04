@@ -45,7 +45,7 @@ res = pd.merge(pred_df,sched_df,on=['stop_id', 'trip_id'], suffixes=('_predicted
 
 res['lateness'] = res['arrival_time_predicted'] - res['arrival_time_scheduled']
 res['lateness_minutes'] = res['lateness'].dt.total_seconds() / 60
-res['on_time'] = res['lateness_minutes'] <= 15
+res['on_time'] = res['lateness_minutes'] <= 5
 
 
 print(f"Predictions in DuckDB: {con.sql("SELECT COUNT(*) FROM predictions").fetchone()[0]}")
