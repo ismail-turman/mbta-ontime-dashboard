@@ -21,6 +21,7 @@ else: con.execute('CREATE TABLE predictions AS SELECT * FROM pred_df')
 
 sched_rows = get_schedules("Red")
 sched_df = pd.DataFrame(sched_rows)
+
 sched_df['arrival_time'] = pd.to_datetime(sched_df['arrival_time'])
 sched_df['departure_time'] = pd.to_datetime(sched_df['departure_time'])
 
